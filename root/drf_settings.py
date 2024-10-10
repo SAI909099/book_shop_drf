@@ -14,7 +14,7 @@ SPECTACULAR_SETTINGS = {
     # OTHER SETTINGS
 }
 
-#todo  JWT Settings
+
 
 from datetime import timedelta
 

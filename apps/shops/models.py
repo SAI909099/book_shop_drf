@@ -3,7 +3,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 from shared.models import TimeBasedModel
 
-#todo -----------------
+
 from django.db import models
 from apps.users.models import User
 
