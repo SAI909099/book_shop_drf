@@ -28,21 +28,24 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps',
 
-    'users',
-    'shops',
+    'apps',
+    'apps.users',
+    'apps.shops',
 
     # Third Party packages
     'rest_framework',
     'drf_spectacular',
     'mptt',
+    'rest_framework_simplejwt',
+
 ]
 AUTH_USER_MODEL = 'users.User'
 
