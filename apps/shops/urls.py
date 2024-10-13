@@ -1,9 +1,11 @@
-from django.urls import path
+from django.urls import path, include
 
-from shops.views import WishlistListCreateView, WishlistDeleteView
+from shops.views import AddressListCreateAPIView, CountryListAPIView, BookListAPIView, WishListAPIView
 
 urlpatterns = [
-    path('wishlist/', WishlistListCreateView.as_view(), name='wishlist-list'),
-    path('wishlist/<int:book_id>/', WishlistDeleteView.as_view(), name='wishlist-delete'),
+    path('address/', AddressListCreateAPIView.as_view()),
+    path('country/', CountryListAPIView.as_view()),
 
+    path('book/', BookListAPIView.as_view()),
+    path('wish-list', WishListAPIView.as_view()),
 ]

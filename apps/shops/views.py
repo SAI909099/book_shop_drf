@@ -1,18 +1,30 @@
-from rest_framework import generics, permissions
-from .models import Wishlist
-from .serializers import WishlistSerializer
+from drf_spectacular.utils import extend_schema
+from rest_framework.generics import ListCreateAPIView, ListAPIView
 
-class WishlistListCreateView(generics.ListCreateAPIView):
-    queryset = Wishlist.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = WishlistSerializer
+from shops.models import Address, Country, Book
+from shops.serializers import AddressModelSerializer, CountryModelSerializer, BookModelSerializer, \
+    WishlistModelSerializer
 
-    def get_queryset(self):
-        return Wishlist.objects.filter(user=self.request.user)
 
-class WishlistDeleteView(generics.DestroyAPIView):
-    queryset = Wishlist.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
+@extend_schema(tags=['address'])
+class AddressListCreateAPIView(ListCreateAPIView):
+    queryset = Address.objects.all()
+    serializer_class = AddressModelSerializer
 
-    def get_object(self):
-        return Wishlist.objects.get(user=self.request.user, book=self.kwargs['book_id'])
+
+@extend_schema(tags=['country'])
+class CountryListAPIView(ListAPIView):
+    queryset = Country.objects.all()
+    serializer_class = CountryModelSerializer
+
+
+
+@extend_schema(tags=['books'])
+class BookListAPIView(ListCreateAPIView):
+    queryset= Book.objects.all()
+    serializer_class = BookModelSerializer
+
+@extend_schema(tags=['wishlist'])
+class WishListAPIView(ListCreateAPIView):
+    queryset = Book.objects.all()
+    serializer_calss = WishlistModelSerializer

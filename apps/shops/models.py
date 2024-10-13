@@ -1,11 +1,14 @@
-from django.db.models import CharField, CASCADE, TextField, ImageField, Model, ForeignKey
-from mptt.models import MPTTModel, TreeForeignKey
-
-from shared.models import TimeBasedModel
-
-
 from django.db import models
-from apps.users.models import User
+from django.db.models import CharField, CASCADE, TextField, ImageField, Model, ForeignKey, JSONField, TextChoices, \
+    DecimalField, PositiveIntegerField, RESTRICT, PositiveSmallIntegerField, ManyToManyField, BooleanField
+from django.db.models import Model
+from django_ckeditor_5.fields import CKEditor5Field
+from mptt.models import MPTTModel
+from mptt.models import MPTTModel, TreeForeignKey
+from shared.models import SlugTimeBasedModel
+
+from users.models import User
+from shared.models import TimeBasedModel
 
 
 class Section(TimeBasedModel):
@@ -31,29 +34,67 @@ class Author(models.Model):
     def __str__(self):
         return self.name
 
-class Book(models.Model):
-    title = models.CharField(max_length=200)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="books")
-    description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    stock = models.IntegerField(default=0)
+
+class Book(SlugTimeBasedModel):
+    class Format(TextChoices):
+        HARDCOVER = 'hardcover', 'Hardcover'
+        PAPERCOVER = 'softcover', 'softcover'
+
+    overview = CKEditor5Field()
+    features = JSONField()
+    # format = CharField(max_length=255, choices=Format, default=Format.HARDCOVER)
+    used_good_price = DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    new_price = DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    ebook_price = DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    audiobook_price = DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    author = ManyToManyField('users.Author')
+    reviews_count = PositiveIntegerField(db_default=0)
+
+
+class Review(TimeBasedModel):
+    name = CharField(max_length=255)
+    description = CKEditor5Field()
+    start = PositiveSmallIntegerField()
+    book = ForeignKey('shops.Book', CASCADE, related_name='reviews')
 
     def __str__(self):
-        return self.title
+        return self.name
 
-class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cart")
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-    added_at = models.DateTimeField(auto_now_add=True)
+
+class Country(Model):
+    name = CharField(max_length=255)
 
     def __str__(self):
-        return f'{self.user.username} - {self.book.title}'
+        return self.name
 
-class Wishlist(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishlist")
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    added_at = models.DateTimeField(auto_now_add=True)
+
+class Address(TimeBasedModel):
+    first_name = CharField(max_length=255)
+    last_name = CharField(max_length=255)
+    country = ForeignKey(Country, CASCADE)
+    address_line_1 = CharField(max_length=255)
+    address_line_2 = CharField(max_length=255, null=True, blank=True)
+    city = CharField(max_length=255)
+    state = CharField(max_length=255)
+    postal_code = PositiveIntegerField(default=0)
+    phone_number = CharField(max_length=15)
+    user = ForeignKey('users.User', RESTRICT)
+    shipping_address = BooleanField(default=False)
+    billing_address = BooleanField(default=True)
+
+
 
     def __str__(self):
-        return f'{self.user.username} - {self.book.title}'
+        return f"{self.first_name} - {self.last_name}"
+
+
+class Cart(TimeBasedModel):
+    book = ForeignKey('shops.Book', CASCADE)
+    owner = ForeignKey('users.User', CASCADE)
+    quantity = PositiveIntegerField(db_default=1)
+
+
+    def __str__(self):
+        return f"{self.owner} - {self.book}"
+
+
