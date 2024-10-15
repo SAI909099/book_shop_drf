@@ -1,5 +1,7 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework.generics import ListCreateAPIView, ListAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
 
 from shops.models import Address, Country, Book
 from shops.serializers import AddressModelSerializer, CountryModelSerializer, BookModelSerializer, \
@@ -12,12 +14,10 @@ class AddressListCreateAPIView(ListCreateAPIView):
     serializer_class = AddressModelSerializer
 
 
-@extend_schema(tags=['country'])
+@extend_schema(tags=['countrys'])
 class CountryListAPIView(ListAPIView):
     queryset = Country.objects.all()
     serializer_class = CountryModelSerializer
-
-
 
 @extend_schema(tags=['books'])
 class BookListAPIView(ListCreateAPIView):

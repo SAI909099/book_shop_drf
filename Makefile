@@ -4,3 +4,10 @@ mig:
 
 user:
 	python3 manage.py createsuperuser
+
+celery:
+	celery -A root worker --loglevel=info
+
+
+flush:
+	python3 manage.py flush --no-input
