@@ -1,23 +1,25 @@
+from celery import shared_task
 from django.core.mail import send_mail
-from django.contrib.auth import get_user_model
+from django.core.cache import cache
+from root.settings import EMAIL_HOST_USER
 
-User = get_user_model()
 
-class PremiumNotifier:
-    def __init__(self, subject, message):
-        self.subject = subject
-        self.message = message
+@shared_task
+def delete_cache_task(cache_key):
+    cache.delete(cache_key)
+    print(f"Cache key {cache_key} successfully deleted.")
+    return f"Cache key {cache_key} successfully deleted."
 
-    def send_notifications(self):
-        premium_users = User.objects.filter(is_premium=True)
-        for user in premium_users:
-            self.send_email(user)
 
-    def send_email(self, user):
-        send_mail(
-            self.subject,
-            self.message,
-            'from@example.com',  # Sender email address
-            [user.email],  # Recipient email address
-            fail_silently=False,
-        )
+@shared_task
+def send_activation_email_task(subject, message, recipient_list, html_message):
+    for recipient in recipient_list:
+        cache_key = f'activation_email:{recipient}'
+        cache.set(cache_key, message, timeout=60)
+        cached_message = cache.get(cache_key)
+        print(f"Cache set for {recipient}: {cached_message}")
+        send_mail(subject, message, EMAIL_HOST_USER, [recipient], html_message=html_message)
+        print(f"Email sent to {recipient}.")
+        delete_cache_task.apply_async((cache_key,), countdown=60)
+    return f"Emails sent to {', '.join(recipient_list)} and cache keys created."
+

@@ -24,4 +24,3 @@ SIMPLE_JWT = {
 }
 
 
-CELERY_BROKER_URL = 'redis://localhost:6380/0'

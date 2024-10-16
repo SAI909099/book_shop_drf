@@ -1,3 +1,4 @@
+from rest_framework.fields import HiddenField, CurrentUserDefault
 from rest_framework.serializers import ModelSerializer
 from shops.models import Address, Country, Book
 
@@ -14,7 +15,6 @@ class WishlistModelSerializer(ModelSerializer):
         fields = '__all__'
 
 
-
 class CountryModelSerializer(ModelSerializer):
     class Meta:
         model = Country
@@ -22,6 +22,8 @@ class CountryModelSerializer(ModelSerializer):
 
 
 class AddressModelSerializer(ModelSerializer):
+    user = HiddenField(default=CurrentUserDefault())
+
     class Meta:
         model = Address
         fields = '__all__'

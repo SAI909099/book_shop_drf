@@ -114,3 +114,23 @@ MEDIA_ROOT = join(BASE_DIR / 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 from root.drf_settings import *
+
+CELERY_BROKER_URL = 'redis://localhost:6380/0'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sulaymonovabdulaziz1@gmail.com'
+EMAIL_HOST_PASSWORD = 'ramq ppur dgey jnfb'
+
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': 'redis://127.0.0.1:6379/0',
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#         },
+#     }
+# }

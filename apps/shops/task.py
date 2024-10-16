@@ -53,4 +53,4 @@ countries_json = [
 
 with open('fixtures/country.json', 'w') as file:
     json.dump(countries_json, file, indent=4)
-print("Davlatlar Django fixture formatida JSON faylga saqlandi.")
+print("Json format .")

@@ -16,6 +16,14 @@ Homework
 
 3.5 admin@gmail.com -> bolsa admin desak kirib ketishi kerak
 
+task
+1. address qoshish va listini olish apisi
+2. edit va ochirish 1tadan kop bolsa
+3. ochirishda default turganlarni ochira olmasligi
+4. listini chiqarishda 1chi defaultlar chiqish keyin name ni alfabit boyicha
+5. default billing no delete, no edit
+6. default shipping no delete
+
 4. user o'zini malumotlarini update qilish apisi
 
 5. wishlist apilari
