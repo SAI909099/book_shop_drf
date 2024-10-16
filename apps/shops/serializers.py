@@ -1,4 +1,5 @@
 from rest_framework.fields import HiddenField, CurrentUserDefault
+from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from shops.models import Address, Country, Book
 
@@ -32,3 +33,8 @@ class AddressModelSerializer(ModelSerializer):
         repr = super().to_representation(instance)
         repr['country'] = CountryModelSerializer(instance.country).data
         return repr
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return Response({'message': 'Address deleted successfully!'})

@@ -1,5 +1,6 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework.generics import ListCreateAPIView, ListAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.response import Response
 
 from shops.models import Country, Book
 from shops.serializers import CountryModelSerializer, BookModelSerializer, \
@@ -47,9 +48,24 @@ class AddressListCreateAPIView(ListCreateAPIView):
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
 
+@extend_schema(tags=['users'])
+class AddressListUpdateAPIView(UpdateAPIView):
+    queryset = Address.objects.all()
+    seralizer_class = AddressModelSerializer
+    permission_class = IsAuthenticated,
+
+@extend_schema(tags=['users'])
+class AddressDestroyAPIView(DestroyAPIView):
+    queryset = Address.objects.all()
+    seralizer_class = AddressModelSerializer
+    permission_class = IsAuthenticated,
+
+
 
 @extend_schema(tags=['users'])
 class CountryListAPIView(ListAPIView):
     queryset = Country.objects.all()
     serializer_class = CountryModelSerializer
     authentication_classes = ()
+
+

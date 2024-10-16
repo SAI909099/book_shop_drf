@@ -3,6 +3,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, EmailField
 from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 from users.models import User
 from django.contrib.auth.hashers import make_password
 
@@ -22,7 +24,7 @@ class UserWishlist(ModelSerializer):
 class UserUpdateSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['first_name', 'email']
 
 
 class RegisterUserModelSerializer(ModelSerializer):
@@ -56,3 +58,11 @@ class LoginUserModelSerializer(Serializer):
             raise ValidationError("Invalid email or password")
         attrs['user'] = user
         return attrs
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['email'] = user.email
+        return token

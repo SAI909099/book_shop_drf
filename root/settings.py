@@ -125,12 +125,3 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'sulaymonovabdulaziz1@gmail.com'
 EMAIL_HOST_PASSWORD = 'ramq ppur dgey jnfb'
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django_redis.cache.RedisCache',
-#         'LOCATION': 'redis://127.0.0.1:6379/0',
-#         'OPTIONS': {
-#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-#         },
-#     }
-# }
