@@ -73,6 +73,7 @@ class LoginAPIView(GenericAPIView):
         }, status=status.HTTP_200_OK)
 
 
+
 @extend_schema(tags=['Access-Token'])
 class ActivateUserView(APIView):
     def get(self, request, uidb64, token):

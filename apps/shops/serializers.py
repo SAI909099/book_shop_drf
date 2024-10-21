@@ -1,7 +1,8 @@
-from rest_framework.fields import HiddenField, CurrentUserDefault
+from rest_framework.fields import HiddenField, CurrentUserDefault, IntegerField, BooleanField
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from shops.models import Address, Country, Book
+from users.models import User
 
 
 class BookModelSerializer(ModelSerializer):
@@ -22,19 +23,37 @@ class CountryModelSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class AddressModelSerializer(ModelSerializer):
+
+class AddressListModelSerializer(ModelSerializer):
     user = HiddenField(default=CurrentUserDefault())
+    postal_code = IntegerField(default=123400, min_value=0)
+    has_shipping_address = BooleanField(write_only=True)
+    has_billing_address = BooleanField(write_only=True)
 
     class Meta:
         model = Address
-        fields = '__all__'
+        exclude = ()
 
-    def to_representation(self, instance: Address):
+    def create(self, validated_data):
+        _has_billing_address = validated_data.pop('has_billing_address')
+        _has_shipping_address = validated_data.pop('has_shipping_address')
+
+        _address = super().create(validated_data)
+        _user: User = _address.user
+        if _has_billing_address:
+            _user.billing_address = _address
+            _user.save()
+
+        if _has_shipping_address:
+            _user.shipping_address = _address
+            _user.save()
+
+        return _address
+
+    def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['country'] = CountryModelSerializer(instance.country).data
+        repr['has_billing_address'] = instance.user.billing_address_id == instance.id
+        repr['has_shipping_address'] = instance.user.shipping_address_id == instance.id
         return repr
 
-    def delete(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.delete()
-        return Response({'message': 'Address deleted successfully!'})

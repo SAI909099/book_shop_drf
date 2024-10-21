@@ -7,7 +7,7 @@ from mptt.models import MPTTModel
 from mptt.models import MPTTModel, TreeForeignKey
 from shared.models import SlugTimeBasedModel
 
-from users.models import User
+# from users.models import User
 from shared.models import TimeBasedModel
 
 
@@ -42,7 +42,6 @@ class Book(SlugTimeBasedModel):
 
     overview = CKEditor5Field()
     features = JSONField()
-    # format = CharField(max_length=255, choices=Format, default=Format.HARDCOVER)
     used_good_price = DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     new_price = DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     ebook_price = DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
@@ -86,6 +85,27 @@ class Address(TimeBasedModel):
 
     def __str__(self):
         return f"{self.first_name} - {self.last_name}"
+
+# class Address(TimeBasedModel):
+#     first_name = CharField(max_length=255)
+#     last_name = CharField(max_length=255)
+#     address_line_1 = CharField(max_length=255)
+#     address_line_2 = CharField(max_length=255, null=True, blank=True)
+#     city = CharField(max_length=255)
+#     state = CharField(max_length=255, null=True, blank=True)
+#     postal_code = PositiveIntegerField(db_default=0, null=True, blank=True)
+#     phone_number = CharField(max_length=16)  # todo + siz saqlash kerak
+#     country = ForeignKey(Country, CASCADE)
+#     user = ForeignKey('users.User', RESTRICT)
+#
+#     # def clean(self):
+#     #     if self.phone_number and not self.phone_number.startswith('+'):
+#     #         self.phone_number = self.phone_number.removeprefix('+')
+#     #     if len(self.phone_number) < 16:
+#     #         raise ValidationError('Telefon raqami to\'g\'ri emas.')
+#
+#     def __str__(self):
+#         return f"{self.first_name} - {self.last_name}"
 
 
 class Cart(TimeBasedModel):

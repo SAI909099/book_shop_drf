@@ -13,3 +13,4 @@ flush:
 
 loaddata:
 	python3 manage.py loaddata country
+
