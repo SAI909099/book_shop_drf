@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'mptt',
     'rest_framework_simplejwt',
+    'django_jsonform'
 
 ]
 AUTH_USER_MODEL = 'users.User'

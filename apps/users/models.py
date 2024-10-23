@@ -23,12 +23,4 @@ class User(AbstractUser):
     wishlist = ManyToManyField('shops.Book', blank=True, related_name='wishlist')
 
 
-class Author(Model):
-    first_name = CharField(max_length=255)
-    last_name = CharField(max_length=255)
-    description = CKEditor5Field(null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.first_name}{self.last_name}"
-
 

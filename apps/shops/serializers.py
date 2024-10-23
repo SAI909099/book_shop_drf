@@ -1,9 +1,14 @@
 from rest_framework.fields import HiddenField, CurrentUserDefault, IntegerField, BooleanField
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
-from shops.models import Address, Country, Book
+from shops.models import Address, Country, Book, Author
 from users.models import User
 
+
+class AuthorModelSerializer(ModelSerializer):
+    class Meta:
+        model = Author
+        exclude = 'description',
 
 class BookModelSerializer(ModelSerializer):
     class Meta:
@@ -57,3 +62,17 @@ class AddressListModelSerializer(ModelSerializer):
         repr['has_shipping_address'] = instance.user.shipping_address_id == instance.id
         return repr
 
+
+
+class BookDetailModelSerializer(ModelSerializer):
+    class Meta:
+        model = Book
+        exclude = ()
+
+
+class BookListModelSerializer(ModelSerializer):
+    author = AuthorModelSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Book
+        fields = ('title', 'slug', 'author', 'image')

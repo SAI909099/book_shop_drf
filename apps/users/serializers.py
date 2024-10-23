@@ -59,7 +59,6 @@ class LoginUserModelSerializer(Serializer):
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
-#todo shettan o'zgartirdim
 
         redis_key = f'failed_attempts_{email}'
         attempts = r.get(redis_key)

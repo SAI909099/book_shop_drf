@@ -1,4 +1,3 @@
-
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
@@ -16,6 +15,8 @@ urlpatterns = [
     # path('address-update/', AddressListUpdateAPIView.as_view()),
     path('address/<int:pk>', AddressDestroyUpdateAPIView.as_view()),
 
-    path('book/', BookListAPIView.as_view()),
+    path('books', BookListAPIView.as_view(), name='book-list'),
+    path('books/<str:slug>', BookListAPIView.as_view(), name='book-list'),
+
     path('wish-list', WishListAPIView.as_view()),
 ]
