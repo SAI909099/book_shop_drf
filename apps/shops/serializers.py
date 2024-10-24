@@ -5,15 +5,19 @@ from shops.models import Address, Country, Book, Author
 from users.models import User
 
 
-class AuthorModelSerializer(ModelSerializer):
-    class Meta:
-        model = Author
-        exclude = 'description',
 
 class BookModelSerializer(ModelSerializer):
     class Meta:
         model = Book
         fields = '__all__'
+
+
+class AuthorModelSerializer(ModelSerializer):
+    books = BookModelSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Author
+        fields = ['first_name', 'last_name', 'description', 'books']
 
 
 class WishlistModelSerializer(ModelSerializer):

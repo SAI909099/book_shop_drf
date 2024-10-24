@@ -12,7 +12,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from users.email_service import ActivationEmailService
 from users.models import User
 from users.serializers import UserUpdateSerializer, RegisterUserModelSerializer, LoginUserModelSerializer, \
-    UserWishlist
+    UserWishlist, WishlistSerializer
+
 
 # @extend_schema(tags=['user'])
 # class UserListAPIView(ListAPIView):
@@ -89,3 +90,21 @@ class ActivateUserView(APIView):
             user.save()
             return Response({"message": "User successfully verified!"})
         raise AuthenticationFailed('The link is invalid or expired.')
+
+
+@extend_schema(tags=['wishlist'])
+class WishlistAPIView(APIView):
+    def get(self, request):
+        # Return the user's current wishlist
+        user = request.user
+        serializer = WishlistSerializer(user)
+        return Response(serializer.data)
+
+    def post(self, request):
+        # Add or remove books from the wishlist
+        user = request.user
+        serializer = WishlistSerializer(data=request.data, instance=user)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Wishlist updated successfully'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

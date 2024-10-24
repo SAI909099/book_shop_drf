@@ -6,6 +6,8 @@ from rest_framework.fields import CharField, EmailField
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from datetime import timedelta
+
+from shops.models import Book
 from users.models import User
 from django.contrib.auth.hashers import make_password
 import redis
@@ -85,3 +87,20 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token['email'] = user.email
         return token
+
+
+class WishlistSerializer(serializers.ModelSerializer):
+    books = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all(), many=True)
+
+    class Meta:
+        model = User
+        fields = ['wishlist', 'books']
+
+    def update(self, instance, validated_data):
+        books = validated_data.get('books', [])
+        for book in books:
+            if book in instance.wishlist.all():
+                instance.wishlist.remove(book)  # Remove book from wishlist if it's already there
+            else:
+                instance.wishlist.add(book)  # Add book to wishlist if not already there
+        return instance

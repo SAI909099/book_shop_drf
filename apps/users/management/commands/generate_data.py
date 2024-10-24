@@ -1,13 +1,15 @@
+from decimal import Decimal
 from random import randint
 
 from celery.utils.functional import first
 from dateutil.tz import UTC
 from django.contrib.auth.hashers import make_password
 from django.core.management.base import BaseCommand
+from faker.generator import random
 from faker.proxy import Faker
 
-from shops.models import Country, Book, Review
-from users.models import User, Author, Address
+from shops.models import Country, Book, Review , Author
+from users.models import User,  Address
 
 
 class Command(BaseCommand):
@@ -23,26 +25,42 @@ class Command(BaseCommand):
             parser.add_argument(f'--{model}', type=int, default=0)
 
     def _book(self, count=0):
-        book_list = list()
+        book_list = []
+
+        # Generate books
         for _ in range(count):
+            # Create book instance with fake data
             book = Book(
-                
                 overview=self.f.sentence(),
                 used_good_price=self.f.numerify(),
-                features=self.f.json(),
                 new_price=self.f.numerify(),
                 ebook_price=self.f.numerify(),
                 audiobook_price=self.f.numerify(),
                 reviews_count=self.f.numerify(),
-
+                features={
+                    'format': random.choice(['hardcover', 'softcover']),
+                    'publisher': self.f.company(),
+                    'pages': self.f.random_int(min=100, max=1000),
+                    'dimensions': f"{random.uniform(5.0, 8.0):.2f} x {random.uniform(8.0, 12.0):.2f} x {random.uniform(0.5, 2.0):.2f} inches",
+                    'shipping_weight': round(random.uniform(0.5, 5.0), 2),
+                    'languages': random.choice(['English', 'Spanish', 'French', 'German', 'Chinese']),
+                    'publication_date': str(self.f.date_this_century()),
+                    'isbn_13': self.f.random_int(9780000000000, 9789999999999),
+                    'isbn_10': self.f.random_int(1000000000, 9999999999),
+                    'edition': random.choice([1, 2, 3, None]),
+                }
             )
-            book.save()
-            author = Author.objects.order_by('?').first()
-            book.author.set([author])
             book_list.append(book)
 
         Book.objects.bulk_create(book_list)
-        self.stdout.write(self.style.SUCCESS(f"Book malumotlari {count} tadan qo'shildi"))
+
+        for book in book_list:
+            author = Author.objects.order_by('?').first()
+            if author:
+                book.author.add(author)
+
+        self.stdout.write(self.style.SUCCESS(f"Books malumotlari {count} tadan qo'shildi "))
+
 
     def _user(self, count=0):
         user_list = list()
@@ -63,7 +81,7 @@ class Command(BaseCommand):
             author_list.append(Author(
                 first_name=self.f.first_name(),
                 last_name=self.f.last_name(),
-                description=self.f.text()
+                description=self.f.sentence(),
             ))
         Author.objects.bulk_create(author_list)
         self.stdout.write(self.style.SUCCESS(f"Author malumotlari {count} tadan qo'shildi"))
@@ -92,7 +110,7 @@ class Command(BaseCommand):
             review_list.append(Review(
                 name=self.f.name(),
                 description=self.f.sentence(),
-                start=randint(1, 5),
+                # start=randint(1, 5),
                 book_id=Book.objects.order_by('?').values_list('id', flat=True).first(),
             ))
         Review.objects.bulk_create(review_list)

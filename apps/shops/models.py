@@ -108,7 +108,7 @@ class Book(SlugTimeBasedModel):
     new_price = DecimalField(help_text='USD da kiritamiz', max_digits=6, decimal_places=2, blank=True, null=True)
     ebook_price = DecimalField(help_text='USD da kiritamiz', max_digits=6, decimal_places=2, blank=True, null=True)
     audiobook_price = DecimalField(help_text='USD da kiritamiz', max_digits=6, decimal_places=2, blank=True, null=True)
-    author = ManyToManyField('shops.Author', blank=True)
+    author = ManyToManyField('shops.Author',  related_name='books' ,blank=True)
     image = ImageField(upload_to='shops/books/%Y/%m/%d')
     reviews_count = PositiveIntegerField(db_default=0, editable=False)
 

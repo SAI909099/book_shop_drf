@@ -20,7 +20,7 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = CustomUserManager()
-    wishlist = ManyToManyField('shops.Book', blank=True, related_name='wishlist')
+    wishlist = ManyToManyField('shops.Book', related_name='wishlist_users', blank=True)
 
 
 

@@ -1,4 +1,3 @@
-
 from os.path import join
 from pathlib import Path
 
@@ -34,7 +33,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'mptt',
     'rest_framework_simplejwt',
-    'django_jsonform'
+    'django_jsonform',
+    'django_seed',
 
 ]
 AUTH_USER_MODEL = 'users.User'
@@ -118,11 +118,9 @@ from root.drf_settings import *
 
 CELERY_BROKER_URL = 'redis://localhost:6380/0'
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'sulaymonovabdulaziz1@gmail.com'
 EMAIL_HOST_PASSWORD = 'ramq ppur dgey jnfb'
-
