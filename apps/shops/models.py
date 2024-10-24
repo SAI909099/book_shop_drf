@@ -8,9 +8,8 @@ from django_jsonform.models.fields import JSONField
 from mptt.models import MPTTModel
 from django.utils.text import slugify
 from mptt.models import MPTTModel, TreeForeignKey
-from shared.models import SlugTimeBasedModel
 
-# from users.models import User
+from shared.models import SlugTimeBasedModel
 from shared.models import TimeBasedModel
 
 
@@ -168,7 +167,7 @@ class Address(TimeBasedModel):
 #     city = CharField(max_length=255)
 #     state = CharField(max_length=255, null=True, blank=True)
 #     postal_code = PositiveIntegerField(db_default=0, null=True, blank=True)
-#     phone_number = CharField(max_length=16)  # todo + siz saqlash kerak
+#     phone_number = CharField(max_length=16)  #  + siz saqlash kerak
 #     country = ForeignKey(Country, CASCADE)
 #     user = ForeignKey('users.User', RESTRICT)
 #
