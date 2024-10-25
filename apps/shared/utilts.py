@@ -13,3 +13,11 @@ def get_dollar_currency() -> tuple[Optional[float], bool]:
                 usd_rate = float(currency['Rate'])
                 return usd_rate, True
     return None, False
+
+def convert_price(price, currency='USD'):
+    exchange_rates = {
+        'USD': 1,
+        'EUR': 0.85,
+        'UZS': 11500,  # Masalan, 1 USD = 11500 UZS
+    }
+    return price * exchange_rates.get(currency, 1)

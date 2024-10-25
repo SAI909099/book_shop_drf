@@ -1,7 +1,11 @@
+from drf_spectacular import serializers
+from rest_framework import serializers
 from rest_framework.fields import HiddenField, CurrentUserDefault, IntegerField, BooleanField
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
-from shops.models import Address, Country, Book, Author
+
+from shared.utilts import convert_price
+from shops.models import Address, Country, Book, Author,Cart
 from users.models import User
 
 
@@ -67,12 +71,37 @@ class AddressListModelSerializer(ModelSerializer):
         return repr
 
 
-
 class BookDetailModelSerializer(ModelSerializer):
+    author = AuthorModelSerializer(many=True, read_only=True)
+    used_good_price = serializers.SerializerMethodField()
+    ebook_price = serializers.SerializerMethodField()
+    audiobook_price = serializers.SerializerMethodField()
+    new_price = serializers.SerializerMethodField()
+
     class Meta:
         model = Book
-        exclude = ()
+        fields = (
+            'title', 'slug', 'author', 'image', 'overview',
+            'used_good_price', 'ebook_price', 'audiobook_price',
+            'reviews_count', 'new_price', 'features'
+        )
 
+    # Har bir narx maydoni uchun serializer methodlarini yaratish
+    def get_used_good_price(self, obj):
+        currency = self.context.get('currency', 'USD')
+        return convert_price(obj.used_good_price, currency)
+
+    def get_ebook_price(self, obj):
+        currency = self.context.get('currency', 'USD')
+        return convert_price(obj.ebook_price, currency)
+
+    def get_audiobook_price(self, obj):
+        currency = self.context.get('currency', 'USD')
+        return convert_price(obj.audiobook_price, currency)
+
+    def get_new_price(self, obj):
+        currency = self.context.get('currency', 'USD')
+        return convert_price(obj.new_price, currency)
 
 class BookListModelSerializer(ModelSerializer):
     author = AuthorModelSerializer(many=True, read_only=True)
@@ -80,3 +109,11 @@ class BookListModelSerializer(ModelSerializer):
     class Meta:
         model = Book
         fields = ('title', 'slug', 'author', 'image')
+
+
+class CartlistModelSerializer(ModelSerializer):
+    book = BookModelSerializer(many=True , read_only=True)
+
+    class Meta:
+        model = Cart
+        exclude = ()

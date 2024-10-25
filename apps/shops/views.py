@@ -1,17 +1,20 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status, mixins
-from rest_framework.generics import ListCreateAPIView, ListAPIView, UpdateAPIView, GenericAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView, UpdateAPIView, GenericAPIView, CreateAPIView, \
+    RetrieveAPIView
 from rest_framework.response import Response
 
+from shared.paginations import CustomPageNumberPagination
 from shops.models import Country, Book, Author
 from shops.serializers import CountryModelSerializer, BookModelSerializer, \
-    WishlistModelSerializer, AddressListModelSerializer, AuthorModelSerializer
+    WishlistModelSerializer, AddressListModelSerializer, AuthorModelSerializer, CartlistModelSerializer, \
+    BookDetailModelSerializer
 
 from drf_spectacular.utils import extend_schema
 from rest_framework.generics import ListCreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from shops.models import Address, Country
+from shops.models import Address, Country,Cart
 from shops.serializers import  CountryModelSerializer
 
 
@@ -95,3 +98,28 @@ class AuthorListAPIView(ListCreateAPIView):
     serializer_class = AuthorModelSerializer
     authentication_classes = ()
 
+@extend_schema(tags=['Cart'])
+class CartLisrAPIView(CreateAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartlistModelSerializer
+    authentication_classes = ()
+
+@extend_schema(tags=['page'])
+class BookDetailAPIView(RetrieveAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookDetailModelSerializer
+    lookup_field = 'slug'
+
+    def get_serializer_context(self):
+        currency = self.request.user.profile.currency if self.request.user.is_authenticated else 'USD'
+        return {'currency': currency}
+
+@extend_schema(tags=['page'])
+class PageListAPIView(ListAPIView):
+    queryset = Book.objects.order_by('-id')
+    serializer_class = BookDetailModelSerializer
+    pagination_class = CustomPageNumberPagination
+
+    def get_serializer_context(self):
+        currency = self.request.user.profile.currency if self.request.user.is_authenticated else 'USD'
+        return {'currency': currency}

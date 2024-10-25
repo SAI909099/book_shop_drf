@@ -27,9 +27,7 @@ class Command(BaseCommand):
     def _book(self, count=0):
         book_list = []
 
-        # Generate books
         for _ in range(count):
-            # Create book instance with fake data
             book = Book(
                 overview=self.f.sentence(),
                 used_good_price=self.f.numerify(),
