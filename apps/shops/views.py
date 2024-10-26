@@ -1,7 +1,7 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status, mixins
 from rest_framework.generics import ListCreateAPIView, ListAPIView, UpdateAPIView, GenericAPIView, CreateAPIView, \
-    RetrieveAPIView
+    RetrieveAPIView, get_object_or_404
 from rest_framework.response import Response
 
 from shared.paginations import CustomPageNumberPagination
@@ -91,12 +91,21 @@ class CountryListAPIView(ListAPIView):
     authentication_classes = ()
 
 
-
+#todo author view  to'g'irlash kere  author name bilan aylanish kerak
 @extend_schema(tags=['author'])
-class AuthorListAPIView(ListCreateAPIView):
+class AuthorDetailView(RetrieveAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorModelSerializer
-    authentication_classes = ()
+
+    def get_object(self):
+        name = self.request.query_params.get('name', None)
+        if name:
+            first_name, last_name = name.split(" ", 1)
+            return get_object_or_404(Author, first_name=first_name, last_name=last_name)
+        return super().get_object()
+
+
+
 
 @extend_schema(tags=['Cart'])
 class CartLisrAPIView(CreateAPIView):
@@ -123,3 +132,10 @@ class PageListAPIView(ListAPIView):
     def get_serializer_context(self):
         currency = self.request.user.profile.currency if self.request.user.is_authenticated else 'USD'
         return {'currency': currency}
+
+
+@extend_schema(tags=['books'])
+class BookRetrieveAPIView(RetrieveAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookDetailModelSerializer
+    lookup_field = 'slug'

@@ -24,6 +24,12 @@ class AuthorModelSerializer(ModelSerializer):
         fields = ['first_name', 'last_name', 'description', 'books']
 
 
+class AuthorDetailModelSerializer(ModelSerializer):
+    class Meta:
+        model = Author
+        exclude = ()
+
+
 class WishlistModelSerializer(ModelSerializer):
     class Meta:
         model = Book
@@ -72,36 +78,13 @@ class AddressListModelSerializer(ModelSerializer):
 
 
 class BookDetailModelSerializer(ModelSerializer):
-    author = AuthorModelSerializer(many=True, read_only=True)
-    used_good_price = serializers.SerializerMethodField()
-    ebook_price = serializers.SerializerMethodField()
-    audiobook_price = serializers.SerializerMethodField()
-    new_price = serializers.SerializerMethodField()
+    author = AuthorDetailModelSerializer(many=True, read_only=True)
 
     class Meta:
         model = Book
-        fields = (
-            'title', 'slug', 'author', 'image', 'overview',
-            'used_good_price', 'ebook_price', 'audiobook_price',
-            'reviews_count', 'new_price', 'features'
-        )
+        exclude = ()
 
-    # Har bir narx maydoni uchun serializer methodlarini yaratish
-    def get_used_good_price(self, obj):
-        currency = self.context.get('currency', 'USD')
-        return convert_price(obj.used_good_price, currency)
 
-    def get_ebook_price(self, obj):
-        currency = self.context.get('currency', 'USD')
-        return convert_price(obj.ebook_price, currency)
-
-    def get_audiobook_price(self, obj):
-        currency = self.context.get('currency', 'USD')
-        return convert_price(obj.audiobook_price, currency)
-
-    def get_new_price(self, obj):
-        currency = self.context.get('currency', 'USD')
-        return convert_price(obj.new_price, currency)
 
 class BookListModelSerializer(ModelSerializer):
     author = AuthorModelSerializer(many=True, read_only=True)
