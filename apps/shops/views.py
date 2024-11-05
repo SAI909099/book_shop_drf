@@ -21,17 +21,16 @@ from shops.serializers import  CountryModelSerializer
 from users.models import User
 
 
-# @extend_schema(tags=['address'])
-# class AddressListCreateAPIView(ListCreateAPIView):
-#     queryset = Address.objects.all()
-#     serializer_class = AddressModelSerializer
 
+
+# --------------------------------counrtys --------------------------------
 
 @extend_schema(tags=['countrys'])
 class CountryListAPIView(ListAPIView):
     queryset = Country.objects.all()
     serializer_class = CountryModelSerializer
 
+#----------------------------books---------------------------
 
 @extend_schema(tags=['books'])
 class BookListAPIView(ListCreateAPIView):
@@ -39,7 +38,14 @@ class BookListAPIView(ListCreateAPIView):
     serializer_class = BookModelSerializer
 
 
+@extend_schema(tags=['books'])
+class BookRetrieveAPIView(RetrieveAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookDetailModelSerializer
+    lookup_field = 'slug'
 
+
+#----------------------address ----------------------------------------
 
 
 @extend_schema(tags=['address'])
@@ -50,12 +56,7 @@ class AddressListCreateAPIView(ListCreateAPIView):
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
-#
-# @extend_schema(tags=['address'])
-# class AddressListUpdateAPIView(UpdateAPIView):
-#     queryset = Address.objects.all()
-#     seralizer_class = AddressListModelSerializer
-#     permission_class = IsAuthenticated,
+
 
 @extend_schema(tags=['address'])
 class AddressDestroyUpdateAPIView(mixins.UpdateModelMixin, mixins.DestroyModelMixin, GenericAPIView):
@@ -90,8 +91,8 @@ class CountryListAPIView(ListAPIView):
     serializer_class = CountryModelSerializer
     authentication_classes = ()
 
+# -------------------------------author -----------------------------------
 
-#todo author view  to'g'irlash kere  author name bilan aylanish kerak
 @extend_schema(tags=['author'])
 class AuthorDetailView(RetrieveAPIView):
     queryset = Author.objects.all()
@@ -105,13 +106,15 @@ class AuthorDetailView(RetrieveAPIView):
         return super().get_object()
 
 
-
+# --------------------------cart ---------------------------------
 
 @extend_schema(tags=['Cart'])
 class CartLisrAPIView(CreateAPIView):
     queryset = Cart.objects.all()
     serializer_class = CartlistModelSerializer
     authentication_classes = ()
+
+#----------------------------------page------------------------------
 
 @extend_schema(tags=['page'])
 class BookDetailAPIView(RetrieveAPIView):
@@ -134,8 +137,3 @@ class PageListAPIView(ListAPIView):
         return {'currency': currency}
 
 
-@extend_schema(tags=['books'])
-class BookRetrieveAPIView(RetrieveAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookDetailModelSerializer
-    lookup_field = 'slug'
