@@ -1,0 +1,15 @@
+
+django==5.1.2
+django-filter==24.3
+django-mptt==0.16.0
+drf-spectacular==0.27.2
+pillow==10.4.0
+djangorestframework-simplejwt==5.3.1
+django-ckeditor-5==0.2.13
+celery[redis]==5.4.0
+django-redis==5.4.0
+faker==30.6.0
+django-jsonform==2.23.1
+requests==2.32.3
+django-seed==0.3.1
+psycopg2-binary==2.9.10
